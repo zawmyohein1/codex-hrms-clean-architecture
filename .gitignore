@@ -1,0 +1,73 @@
+## Build artifacts
+bin/
+obj/
+[Bb]uild/
+[Ll]ogs/
+*.log
+*.trace
+
+## Visual Studio / Rider
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.idea/
+*.DotSettings.user
+.ReSharper*/
+*_Resharper.*
+[Tt]est[Rr]esult*/
+[Bb]enchmarkDotNet.Artifacts/
+
+## VS Code
+.vscode/
+
+## .NET tooling
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.nupkg
+*.snupkg
+
+## Packages / cache
+packages/
+*.cache
+*.tmp
+
+## Database / local data files
+*.mdf
+*.ldf
+*.ndf
+*.db
+*.opendb
+*.jfm
+
+## Symbols / binaries
+*.pdb
+*.mdb
+*.exe
+*.dll
+*.so
+*.dylib
+
+## OS junk
+.DS_Store
+Thumbs.db
+
+## Node/Web (if used by UI)
+node_modules/
+dist/
+coverage/
+
+## Publish / deploy output
+*.PublishSettings
+*.pubxml
+*.pubxml.user
+.publish/
+publish/
+wwwroot/*.map
+
+## IMPORTANT: Do not ignore these
+# - appsettings.json (keep, but never put real secrets)
+# - Migrations/ (EF Core migrations are code, track them)
+# - wwwroot/ (static assets for UI, track them)
