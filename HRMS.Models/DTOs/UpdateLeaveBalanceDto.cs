@@ -1,11 +1,7 @@
 namespace HRMS.Models.DTOs;
 
-public class LeaveBalanceDto
+public class UpdateLeaveBalanceDto
 {
-    public int Id { get; set; }
-
-    public string EmpNo { get; set; } = string.Empty;
-
     public int Annual { get; set; }
 
     public int Sick { get; set; }

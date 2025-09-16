@@ -1,5 +1,7 @@
 using HRMS.DataAccess;
 using HRMS.DataAccess.Repositories;
+using HRMS.Services;
+using HRMS.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +14,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<ILeaveBalanceService, LeaveBalanceService>();
 
 var app = builder.Build();
 
