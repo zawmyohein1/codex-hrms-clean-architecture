@@ -1,9 +1,7 @@
 namespace HRMS.Models.DTOs;
 
-public class LeaveBalanceDto
+public class CreateLeaveBalanceDto
 {
-    public int Id { get; set; }
-
     public string EmpNo { get; set; } = string.Empty;
 
     public int Annual { get; set; }
