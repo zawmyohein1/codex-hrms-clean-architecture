@@ -53,3 +53,28 @@ Run tests:
 cd ../HRMS.Tests
 # dotnet test
 ```
+#### Manual Fixed  After merged DATA ACCESS EF Core
+
+DesignTimeDbContextFactory to compile:
+
+Installed NuGet packages (HRMS.DataAccess)
+
+Microsoft.Extensions.Configuration
+
+Microsoft.Extensions.Configuration.Abstractions
+
+Microsoft.Extensions.Configuration.FileExtensions
+
+Microsoft.Extensions.Configuration.Json
+
+Microsoft.Extensions.Configuration.Binder
+
+Microsoft.Extensions.Configuration.EnvironmentVariables  (needed for AddEnvironmentVariables())
+
+
+DesignTimeDbContextFactory.cs
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
+using System.IO;
