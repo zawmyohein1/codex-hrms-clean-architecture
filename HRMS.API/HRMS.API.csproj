@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <ProjectReference Include="..\HRMS.Services\HRMS.Services.csproj" />
     <ProjectReference Include="..\HRMS.Models\HRMS.Models.csproj" />
     <ProjectReference Include="..\HRMS.DataAccess\HRMS.DataAccess.csproj" />
