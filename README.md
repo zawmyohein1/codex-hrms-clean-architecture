@@ -75,6 +75,61 @@ app.MapGet("/api/employees/{id:int}", async (int id, IEmployeeService employees,
 });
 ```
 
+## PR #5 – API
+- Added `DepartmentsController`, `EmployeesController`, and `LeaveBalancesController` (all under `api/{controller}`) that expose paged list, lookup, create, update, and delete endpoints backed by the service layer.
+- Introduced a shared controller base to translate known service exceptions into RFC 7807 problem details and to normalize paging parameters.
+- Enabled Swagger (development-only) so the new endpoints can be discovered quickly during manual testing, and added controller smoke tests that exercise the CRUD endpoints with stubbed services.
+
+### Sample requests
+```http
+GET /api/employees?page=1&size=10
+```
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "id": 1,
+      "empNo": "EMP001",
+      "fullName": "Ada Lovelace",
+      "email": "ada@example.com",
+      "departmentName": "Engineering",
+      "hireDate": "2020-01-01T00:00:00"
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "pageSize": 10
+}
+```
+
+```http
+POST /api/departments
+Content-Type: application/json
+
+{
+  "name": "People Operations"
+}
+```
+
+```http
+HTTP/1.1 201 Created
+Location: /api/departments/5
+Content-Type: application/json
+
+{
+  "id": 5,
+  "name": "People Operations"
+}
+```
+
+> ℹ️ Validation follows the service layer guardrails: input strings are trimmed and inspected with string-based `StringComparison` overloads (for example `email.Contains("@", StringComparison.Ordinal)`), identifier arguments must be positive integers, and invalid arguments return HTTP 400 with RFC 7807 payloads while missing entities return HTTP 404.
+
+> ⚠️ **Developer note:** After pulling this PR, run `dotnet restore HRMS.sln` locally before the first build to regenerate `project.assets.json`.
+
 ## Running
 
 Restore dependencies and run the projects:
