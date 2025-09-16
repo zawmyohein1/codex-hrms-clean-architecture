@@ -197,7 +197,7 @@ public class EmployeeService : IEmployeeService
 
     private static void ValidateEmail(string email)
     {
-        if (!email.Contains('@', StringComparison.Ordinal) || email.EndsWith('@', StringComparison.Ordinal))
+        if (!email.Contains('@', StringComparison.Ordinal) || email.EndsWith('@'))
         {
             throw new ArgumentException("A valid email address is required.", nameof(email));
         }
