@@ -7,5 +7,6 @@
   <ItemGroup>
     <ProjectReference Include="..\HRMS.Services\HRMS.Services.csproj" />
     <ProjectReference Include="..\HRMS.Models\HRMS.Models.csproj" />
+    <ProjectReference Include="..\HRMS.DataAccess\HRMS.DataAccess.csproj" />
   </ItemGroup>
 </Project>
