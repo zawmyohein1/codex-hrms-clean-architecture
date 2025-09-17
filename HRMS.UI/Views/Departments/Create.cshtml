@@ -1,0 +1,22 @@
+@model CreateDepartmentDto
+
+@{
+    ViewData["Title"] = "Create Department";
+}
+
+<h1 class="h3 mb-4">Create Department</h1>
+
+<form asp-action="Create" method="post" class="card shadow-sm">
+    <div class="card-body">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" required />
+        </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end gap-2">
+        <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+</form>

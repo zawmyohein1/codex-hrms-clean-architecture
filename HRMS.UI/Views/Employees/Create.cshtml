@@ -1,0 +1,44 @@
+@model CreateEmployeeDto
+
+@{
+    ViewData["Title"] = "Create Employee";
+}
+
+<h1 class="h3 mb-4">Create Employee</h1>
+
+<form asp-action="Create" method="post" class="card shadow-sm">
+    <div class="card-body">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="mb-3">
+            <label asp-for="EmpNo" class="form-label"></label>
+            <input asp-for="EmpNo" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="FullName" class="form-label"></label>
+            <input asp-for="FullName" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" type="email" required />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DepartmentId" class="form-label">Department</label>
+            <select asp-for="DepartmentId" asp-items="ViewBag.Departments" class="form-select" required>
+                <option value="">Select a department</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="HireDate" class="form-label"></label>
+            <input asp-for="HireDate" class="form-control" type="date" required />
+        </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end gap-2">
+        <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+</form>
