@@ -163,3 +163,19 @@ cd ../HRMS.Tests
 - Confirmed UI project references `HRMS.Models`.
 - Prepared base structure for future CRUD pages.
 
+### PR #7 – MVC CRUD Pages
+
+- Implemented full CRUD pages in **HRMS.UI**:
+  - **Employees**
+    - `EmployeesController` with Index, Details, Create, Edit, Delete.
+    - Views under `Views/Employees` (Bootstrap forms and tables).
+  - **Departments**
+    - `DepartmentsController` with Index, Details, Create, Edit, Delete.
+    - Views under `Views/Departments`.
+- All CRUD actions communicate with **HRMS.API** via `HttpClient`.
+- Added DTO usage from `HRMS.Models`.
+- Configured base API URL in `appsettings.json`.
+- Updated shared layout (`_Layout.cshtml`) with navbar links to Employees and Departments.
+- Verified minimal but functional UI with Bootstrap styling.
+
+
