@@ -150,3 +150,16 @@ Run tests:
 cd ../HRMS.Tests
 # dotnet test
 ```
+
+
+### PR #6 – MVC UI
+
+- Added standard MVC folder structure: `Controllers`, `Views`, `Models`.
+- Implemented `HomeController` with `Index()` action.
+- Created `Views/Home/Index.cshtml` with placeholder: **"HRMS UI Home Page"**.
+- Added shared layout `Views/Shared/_Layout.cshtml` (Bootstrap, navbar, footer).
+- Configured `_ViewStart.cshtml` to use the layout.
+- Added `_ViewImports.cshtml` with TagHelpers and `HRMS.Models` namespace.
+- Confirmed UI project references `HRMS.Models`.
+- Prepared base structure for future CRUD pages.
+
