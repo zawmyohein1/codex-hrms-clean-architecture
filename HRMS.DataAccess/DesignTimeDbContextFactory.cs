@@ -11,7 +11,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AppDbConte
     {
         var configuration = BuildConfiguration();
         var connectionString = configuration.GetConnectionString("DefaultConnection")
-                               ?? "Server=(localdb)\\MSSQLLocalDB;Database=HRMSDb;Trusted_Connection=True;TrustServerCertificate=True;";
+                               ?? "Server=.; Database=HRMS-DEMO; User Id=xxx;  Password=XXXX; Trusted_Connection=false; MultipleActiveResultSets=true;TrustServerCertificate=true;";
 
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         optionsBuilder.UseSqlServer(connectionString);
