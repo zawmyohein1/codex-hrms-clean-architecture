@@ -117,6 +117,8 @@ Configured _ViewStart.cshtml and _ViewImports.cshtml.
 
 Confirmed reference to HRMS.Models.
 
+Introduced named route for API department lookup and `CreatedAtRoute` usage, plus resilient MVC create flow that surfaces API problem details and redirects on success.
+
 PR #7 – MVC CRUD Pages
 
 Added Employees CRUD (EmployeesController, Views/Employees/*).

@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -75,7 +76,13 @@ public class DepartmentsController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError(string.Empty, "Unable to create department.");
+        var handled = await TryHandleProblemDetailsAsync(response);
+
+        if (!handled)
+        {
+            ModelState.AddModelError(string.Empty, "Unable to create department.");
+        }
+
         return View(dto);
     }
 
@@ -190,5 +197,68 @@ public class DepartmentsController : Controller
         return string.IsNullOrWhiteSpace(content)
             ? default
             : JsonSerializer.Deserialize<T>(content, _jsonOptions);
+    }
+
+    private async Task<bool> TryHandleProblemDetailsAsync(HttpResponseMessage response)
+    {
+        var content = await response.Content.ReadAsStringAsync();
+
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return false;
+        }
+
+        if (TryDeserialize(content, out ValidationProblemDetails? validationProblem) && validationProblem is not null)
+        {
+            AddProblemDetailsToModelState(validationProblem);
+            return true;
+        }
+
+        if (TryDeserialize(content, out ProblemDetails? problem) && problem is not null)
+        {
+            AddProblemDetailsToModelState(problem);
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool TryDeserialize<T>(string content, out T? result)
+    {
+        try
+        {
+            result = JsonSerializer.Deserialize<T>(content, _jsonOptions);
+            return true;
+        }
+        catch (JsonException)
+        {
+            result = default;
+            return false;
+        }
+    }
+
+    private void AddProblemDetailsToModelState(ProblemDetails problem)
+    {
+        if (problem is ValidationProblemDetails validationProblem)
+        {
+            foreach (var kvp in validationProblem.Errors)
+            {
+                foreach (var error in kvp.Value)
+                {
+                    var key = string.IsNullOrWhiteSpace(kvp.Key) ? string.Empty : kvp.Key;
+                    ModelState.AddModelError(key, error);
+                }
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(problem.Title))
+        {
+            ModelState.AddModelError(string.Empty, problem.Title);
+        }
+
+        if (!string.IsNullOrWhiteSpace(problem.Detail) && !string.Equals(problem.Detail, problem.Title, StringComparison.Ordinal))
+        {
+            ModelState.AddModelError(string.Empty, problem.Detail);
+        }
     }
 }
