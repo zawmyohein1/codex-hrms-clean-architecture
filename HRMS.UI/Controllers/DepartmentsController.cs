@@ -72,10 +72,76 @@ public class DepartmentsController : Controller
 
         if (response.IsSuccessStatusCode)
         {
+            TempData["Success"] = "Department created successfully.";
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError(string.Empty, "Unable to create department.");
+        var content = await response.Content.ReadAsStringAsync();
+        var errorsAdded = false;
+
+        if (!string.IsNullOrWhiteSpace(content))
+        {
+            try
+            {
+                var problem = JsonSerializer.Deserialize<ProblemDetails>(content, _jsonOptions);
+
+                if (problem is not null)
+                {
+                    if (!string.IsNullOrWhiteSpace(problem.Title))
+                    {
+                        ModelState.AddModelError(string.Empty, problem.Title);
+                        errorsAdded = true;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(problem.Detail) && problem.Detail != problem.Title)
+                    {
+                        ModelState.AddModelError(string.Empty, problem.Detail);
+                        errorsAdded = true;
+                    }
+
+                    if (problem.Extensions.TryGetValue("errors", out var errorsValue) && errorsValue is JsonElement errorsElement && errorsElement.ValueKind == JsonValueKind.Object)
+                    {
+                        foreach (var errorProperty in errorsElement.EnumerateObject())
+                        {
+                            if (errorProperty.Value.ValueKind == JsonValueKind.Array)
+                            {
+                                foreach (var errorMessage in errorProperty.Value.EnumerateArray())
+                                {
+                                    if (errorMessage.ValueKind == JsonValueKind.String)
+                                    {
+                                        var message = errorMessage.GetString();
+                                        if (!string.IsNullOrWhiteSpace(message))
+                                        {
+                                            ModelState.AddModelError(errorProperty.Name, message!);
+                                            errorsAdded = true;
+                                        }
+                                    }
+                                }
+                            }
+                            else if (errorProperty.Value.ValueKind == JsonValueKind.String)
+                            {
+                                var message = errorProperty.Value.GetString();
+                                if (!string.IsNullOrWhiteSpace(message))
+                                {
+                                    ModelState.AddModelError(errorProperty.Name, message!);
+                                    errorsAdded = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (JsonException)
+            {
+                // Ignore parsing errors and fall back to generic message below.
+            }
+        }
+
+        if (!errorsAdded)
+        {
+            ModelState.AddModelError(string.Empty, "Unable to create department.");
+        }
+
         return View(dto);
     }
 
