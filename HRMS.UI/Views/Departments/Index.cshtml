@@ -9,6 +9,11 @@
     <a class="btn btn-primary" asp-action="Create">Create Department</a>
 </div>
 
+@if (TempData["Success"] is string msg && !string.IsNullOrWhiteSpace(msg))
+{
+    <div class="alert alert-success" role="alert">@msg</div>
+}
+
 @if (ViewData["ErrorMessage"] is string errorMessage)
 {
     <div class="alert alert-danger" role="alert">@errorMessage</div>
