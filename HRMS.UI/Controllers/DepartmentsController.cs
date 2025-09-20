@@ -72,10 +72,11 @@ public class DepartmentsController : Controller
 
         if (response.IsSuccessStatusCode)
         {
+            TempData["Success"] = "Department created successfully.";
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError(string.Empty, "Unable to create department.");
+        await AddProblemDetailsToModelStateAsync(response);
         return View(dto);
     }
 
@@ -183,6 +184,75 @@ public class DepartmentsController : Controller
     }
 
     private HttpClient CreateClient() => _httpClientFactory.CreateClient("HRMSApi");
+
+    private async Task AddProblemDetailsToModelStateAsync(HttpResponseMessage response)
+    {
+        var content = await response.Content.ReadAsStringAsync();
+        var errorAdded = false;
+
+        if (!string.IsNullOrWhiteSpace(content))
+        {
+            try
+            {
+                using var document = JsonDocument.Parse(content);
+                var root = document.RootElement;
+
+                if (root.TryGetProperty("title", out var titleElement))
+                {
+                    var title = titleElement.GetString();
+                    if (!string.IsNullOrWhiteSpace(title))
+                    {
+                        ModelState.AddModelError(string.Empty, title);
+                        errorAdded = true;
+                    }
+                }
+
+                if (root.TryGetProperty("detail", out var detailElement))
+                {
+                    var detail = detailElement.GetString();
+                    if (!string.IsNullOrWhiteSpace(detail))
+                    {
+                        ModelState.AddModelError(string.Empty, detail);
+                        errorAdded = true;
+                    }
+                }
+
+                if (root.TryGetProperty("errors", out var errorsElement) && errorsElement.ValueKind == JsonValueKind.Object)
+                {
+                    foreach (var property in errorsElement.EnumerateObject())
+                    {
+                        if (property.Value.ValueKind != JsonValueKind.Array)
+                        {
+                            continue;
+                        }
+
+                        foreach (var errorElement in property.Value.EnumerateArray())
+                        {
+                            var message = errorElement.GetString();
+                            if (string.IsNullOrWhiteSpace(message))
+                            {
+                                continue;
+                            }
+
+                            ModelState.AddModelError(property.Name, message);
+                            errorAdded = true;
+                        }
+                    }
+                }
+
+                if (errorAdded)
+                {
+                    return;
+                }
+            }
+            catch (JsonException)
+            {
+                // Ignore parsing errors and fall back to a generic message.
+            }
+        }
+
+        ModelState.AddModelError(string.Empty, "Unable to create department.");
+    }
 
     private async Task<T?> DeserializeAsync<T>(HttpResponseMessage response)
     {

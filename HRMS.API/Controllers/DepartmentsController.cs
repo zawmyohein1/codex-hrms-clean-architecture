@@ -30,8 +30,8 @@ public class DepartmentsController : ApiControllerBase
         }
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetByIdAsync([FromRoute] int id, CancellationToken cancellationToken = default)
+    [HttpGet("{id:int}", Name = "GetDepartmentById")]
+    public async Task<IActionResult> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -50,7 +50,7 @@ public class DepartmentsController : ApiControllerBase
         try
         {
             var created = await _departmentService.CreateAsync(dto, cancellationToken);
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = created.Id }, created);
+            return CreatedAtRoute("GetDepartmentById", new { id = created.Id }, created);
         }
         catch (Exception ex) when (ex is ArgumentException or InvalidOperationException)
         {

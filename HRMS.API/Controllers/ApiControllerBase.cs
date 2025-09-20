@@ -39,6 +39,8 @@ public abstract class ApiControllerBase : ControllerBase
         {
             InvalidOperationException invalidOperation when invalidOperation.Message.Contains("not found", StringComparison.OrdinalIgnoreCase)
                 => Problem(detail: invalidOperation.Message, statusCode: StatusCodes.Status404NotFound, title: "Not Found"),
+            InvalidOperationException invalidOperation when invalidOperation.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase)
+                => Problem(detail: invalidOperation.Message, statusCode: StatusCodes.Status409Conflict, title: "Conflict"),
             ArgumentException argumentException
                 => Problem(detail: argumentException.Message, statusCode: StatusCodes.Status400BadRequest, title: "Bad Request"),
             InvalidOperationException invalidOperation
