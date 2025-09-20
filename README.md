@@ -145,4 +145,28 @@ Use dotnet restore HRMS.sln after pulling new PRs to regenerate assets.
 
 
 
+### Finalize Create Flow (API & UI) — Departments, Employees, LeaveBalances
+
+**Branch:** `codex/standardize-create/edit-flows-across-api-and-ui`
+
+**Fixed**
+- **API 500 at CreatedAtAction**: switched to named routes + `CreatedAtRoute("Get{EntityName}ById", new { id }, created)`.
+- **Wrong/empty alert banner**: Create/Edit views only render validation summary when ModelState is invalid; added/confirmed `_ValidationScriptsPartial`.
+- **HandleException compile error**: replaced `or` with `||`, added null-safe `?.Contains(... ) ?? false`, mapped exceptions → ProblemDetails (404/409/400/500).
+- **Unit tests**: controller constructors now receive `ILogger<T>` via `NullLogger<T>.Instance`.
+
+**Impact**
+- Consistent 201/200 responses; no route-resolution 500s.
+- Clear, user-friendly validation and success messages.
+- Robust exception-to-ProblemDetails mapping.
+- Tests align with constructor signatures.
+
+**Verify**
+1. Create valid Department/Employee/LeaveBalance → redirect to Index, green success banner, new row present.
+2. Submit invalid/duplicate → stays on page, shows specific ProblemDetails; no empty red banner.
+3. No 500 from create endpoints; logs only for unexpected errors.
+4. Tests compile/run without ILogger constructor issues.
+
+
+
 
