@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using HRMS.Models.DTOs;
+using HRMS.UI.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HRMS.UI.Controllers;
@@ -72,10 +73,11 @@ public class DepartmentsController : Controller
 
         if (response.IsSuccessStatusCode)
         {
+            TempData["Success"] = "Department saved successfully.";
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError(string.Empty, "Unable to create department.");
+        await response.AddErrorsToModelStateAsync(ModelState, "department");
         return View(dto);
     }
 
@@ -124,10 +126,11 @@ public class DepartmentsController : Controller
 
         if (response.IsSuccessStatusCode)
         {
+            TempData["Success"] = "Department saved successfully.";
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError(string.Empty, "Unable to update department.");
+        await response.AddErrorsToModelStateAsync(ModelState, "department");
         ViewBag.DepartmentId = id;
         return View(dto);
     }

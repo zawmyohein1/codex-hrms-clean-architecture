@@ -1,6 +1,7 @@
 using HRMS.Models.DTOs;
 using HRMS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace HRMS.API.Controllers;
 
@@ -9,10 +10,12 @@ namespace HRMS.API.Controllers;
 public class EmployeesController : ApiControllerBase
 {
     private readonly IEmployeeService _employeeService;
+    private readonly ILogger<EmployeesController> _logger;
 
-    public EmployeesController(IEmployeeService employeeService)
+    public EmployeesController(IEmployeeService employeeService, ILogger<EmployeesController> logger)
     {
         _employeeService = employeeService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -30,7 +33,7 @@ public class EmployeesController : ApiControllerBase
         }
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "GetEmployeeById")]
     public async Task<IActionResult> GetByIdAsync([FromRoute] int id, CancellationToken cancellationToken = default)
     {
         try
@@ -50,11 +53,11 @@ public class EmployeesController : ApiControllerBase
         try
         {
             var created = await _employeeService.CreateAsync(dto, cancellationToken);
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = created.Id }, created);
+            return CreatedAtRoute("GetEmployeeById", new { id = created.Id }, created);
         }
-        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException)
+        catch (Exception ex)
         {
-            return HandleException(ex);
+            return HandleAndLogException(ex, _logger, "creating", "employee");
         }
     }
 
@@ -66,9 +69,9 @@ public class EmployeesController : ApiControllerBase
             var updated = await _employeeService.UpdateAsync(id, dto, cancellationToken);
             return updated is not null ? Ok(updated) : NotFound();
         }
-        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException)
+        catch (Exception ex)
         {
-            return HandleException(ex);
+            return HandleAndLogException(ex, _logger, "updating", "employee");
         }
     }
 

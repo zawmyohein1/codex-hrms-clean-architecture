@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using HRMS.Models.DTOs;
+using HRMS.UI.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -84,10 +85,11 @@ public class EmployeesController : Controller
 
         if (response.IsSuccessStatusCode)
         {
+            TempData["Success"] = "Employee saved successfully.";
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError(string.Empty, "Unable to create employee.");
+        await response.AddErrorsToModelStateAsync(ModelState, "employee");
         await PopulateDepartmentsAsync(dto.DepartmentId);
         return View(dto);
     }
@@ -149,10 +151,11 @@ public class EmployeesController : Controller
 
         if (response.IsSuccessStatusCode)
         {
+            TempData["Success"] = "Employee saved successfully.";
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError(string.Empty, "Unable to update employee.");
+        await response.AddErrorsToModelStateAsync(ModelState, "employee");
         await PopulateDepartmentsAsync(dto.DepartmentId);
         ViewBag.EmployeeId = id;
         ViewBag.EmpNo = empNo;
