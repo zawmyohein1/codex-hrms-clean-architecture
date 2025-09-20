@@ -1,6 +1,7 @@
 using HRMS.Models.DTOs;
 using HRMS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace HRMS.API.Controllers;
 
@@ -9,10 +10,12 @@ namespace HRMS.API.Controllers;
 public class DepartmentsController : ApiControllerBase
 {
     private readonly IDepartmentService _departmentService;
+    private readonly ILogger<DepartmentsController> _logger;
 
-    public DepartmentsController(IDepartmentService departmentService)
+    public DepartmentsController(IDepartmentService departmentService, ILogger<DepartmentsController> logger)
     {
         _departmentService = departmentService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -30,7 +33,7 @@ public class DepartmentsController : ApiControllerBase
         }
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "GetDepartmentById")]
     public async Task<IActionResult> GetByIdAsync([FromRoute] int id, CancellationToken cancellationToken = default)
     {
         try
@@ -50,11 +53,11 @@ public class DepartmentsController : ApiControllerBase
         try
         {
             var created = await _departmentService.CreateAsync(dto, cancellationToken);
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = created.Id }, created);
+            return CreatedAtRoute("GetDepartmentById", new { id = created.Id }, created);
         }
-        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException)
+        catch (Exception ex)
         {
-            return HandleException(ex);
+            return HandleAndLogException(ex, _logger, "creating", "department");
         }
     }
 
@@ -66,9 +69,9 @@ public class DepartmentsController : ApiControllerBase
             var updated = await _departmentService.UpdateAsync(id, dto, cancellationToken);
             return updated is not null ? Ok(updated) : NotFound();
         }
-        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException)
+        catch (Exception ex)
         {
-            return HandleException(ex);
+            return HandleAndLogException(ex, _logger, "updating", "department");
         }
     }
 

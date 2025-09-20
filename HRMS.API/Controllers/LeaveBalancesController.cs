@@ -1,6 +1,7 @@
 using HRMS.Models.DTOs;
 using HRMS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace HRMS.API.Controllers;
 
@@ -9,10 +10,12 @@ namespace HRMS.API.Controllers;
 public class LeaveBalancesController : ApiControllerBase
 {
     private readonly ILeaveBalanceService _leaveBalanceService;
+    private readonly ILogger<LeaveBalancesController> _logger;
 
-    public LeaveBalancesController(ILeaveBalanceService leaveBalanceService)
+    public LeaveBalancesController(ILeaveBalanceService leaveBalanceService, ILogger<LeaveBalancesController> logger)
     {
         _leaveBalanceService = leaveBalanceService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -30,7 +33,7 @@ public class LeaveBalancesController : ApiControllerBase
         }
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "GetLeaveBalanceById")]
     public async Task<IActionResult> GetByIdAsync([FromRoute] int id, CancellationToken cancellationToken = default)
     {
         try
@@ -50,11 +53,11 @@ public class LeaveBalancesController : ApiControllerBase
         try
         {
             var created = await _leaveBalanceService.CreateAsync(dto, cancellationToken);
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = created.Id }, created);
+            return CreatedAtRoute("GetLeaveBalanceById", new { id = created.Id }, created);
         }
-        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException)
+        catch (Exception ex)
         {
-            return HandleException(ex);
+            return HandleAndLogException(ex, _logger, "creating", "leave balance");
         }
     }
 
@@ -66,9 +69,9 @@ public class LeaveBalancesController : ApiControllerBase
             var updated = await _leaveBalanceService.UpdateAsync(id, dto, cancellationToken);
             return updated is not null ? Ok(updated) : NotFound();
         }
-        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException)
+        catch (Exception ex)
         {
-            return HandleException(ex);
+            return HandleAndLogException(ex, _logger, "updating", "leave balance");
         }
     }
 
