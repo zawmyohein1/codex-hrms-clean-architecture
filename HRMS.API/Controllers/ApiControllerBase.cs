@@ -1,3 +1,4 @@
+using System;
 using HRMS.Models.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,18 +34,36 @@ public abstract class ApiControllerBase : ControllerBase
         return request;
     }
 
-    protected IActionResult HandleException(Exception exception)
+    protected IActionResult HandleException(Exception ex)
     {
-        return exception switch
+        return ex switch
         {
-            InvalidOperationException invalidOperation when invalidOperation.Message.Contains("not found", StringComparison.OrdinalIgnoreCase)
-                => Problem(detail: invalidOperation.Message, statusCode: StatusCodes.Status404NotFound, title: "Not Found"),
+            InvalidOperationException invalidOperation when
+                (invalidOperation.Message?.Contains("not found", StringComparison.OrdinalIgnoreCase) ?? false)
+                => Problem(detail: invalidOperation.Message,
+                           statusCode: StatusCodes.Status404NotFound,
+                           title: "Not Found"),
+
+            InvalidOperationException invalidOperation when
+                (invalidOperation.Message?.Contains("exist", StringComparison.OrdinalIgnoreCase) ?? false)
+                || (invalidOperation.Message?.Contains("duplicate", StringComparison.OrdinalIgnoreCase) ?? false)
+                => Problem(detail: invalidOperation.Message,
+                           statusCode: StatusCodes.Status409Conflict,
+                           title: "Conflict"),
+
             ArgumentException argumentException
-                => Problem(detail: argumentException.Message, statusCode: StatusCodes.Status400BadRequest, title: "Bad Request"),
+                => Problem(detail: argumentException.Message,
+                           statusCode: StatusCodes.Status400BadRequest,
+                           title: "Bad Request"),
+
             InvalidOperationException invalidOperation
-                => Problem(detail: invalidOperation.Message, statusCode: StatusCodes.Status400BadRequest, title: "Bad Request"),
-            _
-                => Problem(detail: "An unexpected error occurred.", statusCode: StatusCodes.Status500InternalServerError, title: "Server Error")
+                => Problem(detail: invalidOperation.Message,
+                           statusCode: StatusCodes.Status400BadRequest,
+                           title: "Bad Request"),
+
+            _ => Problem(detail: "An unexpected error occurred.",
+                          statusCode: StatusCodes.Status500InternalServerError,
+                          title: "Server Error")
         };
     }
 }

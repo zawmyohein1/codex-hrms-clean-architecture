@@ -2,6 +2,8 @@ using HRMS.API.Controllers;
 using HRMS.Models.DTOs;
 using HRMS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace HRMS.Tests;
 
@@ -11,7 +13,8 @@ public class Controllers_SmokeTests
     public async Task DepartmentsController_Get_ReturnsOk()
     {
         var service = new StubDepartmentService();
-        var controller = new DepartmentsController(service);
+        var departmentsLogger = NullLogger<DepartmentsController>.Instance;
+        var controller = new DepartmentsController(service, departmentsLogger);
 
         var result = await controller.GetAsync(null, null, null, CancellationToken.None);
 
@@ -26,7 +29,8 @@ public class Controllers_SmokeTests
         {
             GetByIdHandler = (id, token) => Task.FromResult<EmployeeDto?>(null)
         };
-        var controller = new EmployeesController(service);
+        var employeesLogger = NullLogger<EmployeesController>.Instance;
+        var controller = new EmployeesController(service, employeesLogger);
 
         var result = await controller.GetByIdAsync(123, CancellationToken.None);
 
@@ -37,7 +41,8 @@ public class Controllers_SmokeTests
     public async Task LeaveBalancesController_Create_ReturnsCreated()
     {
         var service = new StubLeaveBalanceService();
-        var controller = new LeaveBalancesController(service);
+        var leaveBalancesLogger = NullLogger<LeaveBalancesController>.Instance;
+        var controller = new LeaveBalancesController(service, leaveBalancesLogger);
         var dto = new CreateLeaveBalanceDto
         {
             EmpNo = "EMP001",
