@@ -1,0 +1,53 @@
+@model UpdateLeaveBalanceDto
+
+@{
+    ViewData["Title"] = "Edit Leave Balance";
+    int leaveBalanceId = ViewBag.LeaveBalanceId is int value ? value : 0;
+    string employeeNumber = ViewBag.EmpNo as string ?? string.Empty;
+}
+
+<h1 class="h3 mb-4">Edit Leave Balance</h1>
+
+<form asp-action="Edit" asp-route-id="@leaveBalanceId" method="post" class="card shadow-sm">
+    <div class="card-body">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger" role="alert">
+                <div asp-validation-summary="All"></div>
+            </div>
+        }
+
+        <input type="hidden" name="empNo" value="@employeeNumber" />
+
+        <div class="mb-3">
+            <label class="form-label">Employee No</label>
+            <input class="form-control" value="@employeeNumber" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Annual" class="form-label"></label>
+            <input asp-for="Annual" class="form-control" type="number" min="0" required />
+            <span asp-validation-for="Annual" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Sick" class="form-label"></label>
+            <input asp-for="Sick" class="form-control" type="number" min="0" required />
+            <span asp-validation-for="Sick" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Unpaid" class="form-label"></label>
+            <input asp-for="Unpaid" class="form-control" type="number" min="0" required />
+            <span asp-validation-for="Unpaid" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end gap-2">
+        <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

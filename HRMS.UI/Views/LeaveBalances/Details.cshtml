@@ -1,0 +1,30 @@
+@model LeaveBalanceDto
+
+@{
+    ViewData["Title"] = "Leave Balance Details";
+}
+
+<h1 class="h3 mb-4">Leave Balance Details</h1>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Employee No</dt>
+            <dd class="col-sm-9">@Model.EmpNo</dd>
+
+            <dt class="col-sm-3">Annual</dt>
+            <dd class="col-sm-9">@Model.Annual</dd>
+
+            <dt class="col-sm-3">Sick</dt>
+            <dd class="col-sm-9">@Model.Sick</dd>
+
+            <dt class="col-sm-3">Unpaid</dt>
+            <dd class="col-sm-9">@Model.Unpaid</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="mt-4 d-flex gap-2">
+    <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    <a class="btn btn-outline-secondary" asp-action="Index">Back to List</a>
+</div>
