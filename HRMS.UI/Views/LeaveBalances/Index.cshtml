@@ -40,7 +40,10 @@
                 <select id="pageSize" name="pageSize" class="form-select">
                     @foreach (var option in pageSizeOptions)
                     {
-                        <option value="@option" @(currentPageSize == option ? "selected" : string.Empty)>@option</option>
+                        <option value="@option" selected="@(currentPageSize == option)">
+                            @option
+                        </option>
+
                     }
                 </select>
             </div>
