@@ -1,0 +1,50 @@
+@model CreateLeaveBalanceDto
+
+@{
+    ViewData["Title"] = "Create Leave Balance";
+}
+
+<h1 class="h3 mb-4">Create Leave Balance</h1>
+
+<form asp-action="Create" method="post" class="card shadow-sm">
+    <div class="card-body">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger" role="alert">
+                <div asp-validation-summary="All"></div>
+            </div>
+        }
+
+        <div class="mb-3">
+            <label asp-for="EmpNo" class="form-label"></label>
+            <input asp-for="EmpNo" class="form-control" required />
+            <span asp-validation-for="EmpNo" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Annual" class="form-label"></label>
+            <input asp-for="Annual" class="form-control" type="number" min="0" required />
+            <span asp-validation-for="Annual" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Sick" class="form-label"></label>
+            <input asp-for="Sick" class="form-control" type="number" min="0" required />
+            <span asp-validation-for="Sick" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Unpaid" class="form-label"></label>
+            <input asp-for="Unpaid" class="form-control" type="number" min="0" required />
+            <span asp-validation-for="Unpaid" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end gap-2">
+        <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

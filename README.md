@@ -117,35 +117,17 @@ Configured _ViewStart.cshtml and _ViewImports.cshtml.
 
 Confirmed reference to HRMS.Models.
 
-PR #7 – MVC CRUD Pages
+PR #7 – MVC CRUD Pages (Employees, Departments)
 
 Added Employees CRUD (EmployeesController, Views/Employees/*).
-
 Added Departments CRUD (DepartmentsController, Views/Departments/*).
-
-Views use Bootstrap forms and tables.
-
-UI communicates with HRMS.API via HttpClient.
-
+Views use Bootstrap forms and tables with antiforgery and validation partials.
+UI communicates with HRMS.API via HttpClient, following DTO-only pattern.
 Configured API base URL in appsettings.json.
-
 Updated _Layout.cshtml with navbar links.
+Verified functional UI with Bootstrap styling and TempData alerts.
 
-Verified functional UI with Bootstrap styling.
-
-Developer Notes
-
-Always keep EF Core package versions consistent (8.0.6).
-
-Ensure migrations include .Designer.cs or EF won’t detect them.
-
-DefaultConnection must match in both Program.cs and DesignTimeDbContextFactory.
-
-Use dotnet restore HRMS.sln after pulling new PRs to regenerate assets.
-
-
-
-### Finalize Create Flow (API & UI) — Departments, Employees, LeaveBalances
+PR #8 Finalize Create Flow (API & UI) — Departments, Employees, LeaveBalances
 
 **Branch:** `codex/standardize-create/edit-flows-across-api-and-ui`
 
@@ -167,6 +149,25 @@ Use dotnet restore HRMS.sln after pulling new PRs to regenerate assets.
 3. No 500 from create endpoints; logs only for unexpected errors.
 4. Tests compile/run without ILogger constructor issues.
 
+PR #9 – MVC CRUD Pages (Leave Balances)
 
+Added LeaveBalancesController with Index, Details, Create, Edit, Delete actions.
+Views under Views/LeaveBalances/*:
+- Index.cshtml → @model PagedResult<LeaveBalanceDto>
+- Details.cshtml → @model LeaveBalanceDto
+- Create.cshtml → @model CreateLeaveBalanceDto
+- Edit.cshtml → @model UpdateLeaveBalanceDto
+- Delete.cshtml → @model LeaveBalanceDto
+All views use Bootstrap forms/tables, antiforgery tokens, validation summary, and TempData banners.
+UI calls HRMS.API endpoints via HttpClient, consistent with Employees/Departments.
+Updated _Layout.cshtml with Leave Balances link.
+No extra ViewModels created; only DTOs used.
+Developer Notes
 
+Always keep EF Core package versions consistent (8.0.6).
 
+Ensure migrations include .Designer.cs or EF won’t detect them.
+
+DefaultConnection must match in both Program.cs and DesignTimeDbContextFactory.
+
+Use dotnet restore HRMS.sln after pulling new PRs to regenerate assets.
